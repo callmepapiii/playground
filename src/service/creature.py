@@ -1,5 +1,5 @@
 from models.creature import Creature
-import fake.creature as data 
+import data.creature as data 
 
 def get_all() -> list[Creature]:
     return data.get_all()

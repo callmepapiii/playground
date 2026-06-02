@@ -1,0 +1,9 @@
+# Database file (SQLite)
+db/
+*.db
+
+#Python
+__pycache__/
+*.pyc
+*.pyo
+.env
