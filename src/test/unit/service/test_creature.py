@@ -1,22 +1,52 @@
 from model.creature import Creature
-from service import creature as code
+import os 
+os.getenv["CRYPTID_UNIT_TEST"] = "true"
+import pytest
+from data import creature as data
+from error import Missing, Duplicate
 
-sample = Creature(
-    name = "Chula",
-    description = "War-like angry dude",
-    area = "Ruai",
-    aka = "Maina",
-    country = "KE"
-)
+@pytest.fixture
+def sample() -> Creature:
+    return Creature(
+        name="yetti",
+        aka="Abominable Snowman",
+        country="CN",
+        area="Himalayas",
+        description="Handsome Himalayan"
+    )
 
-def test_create():
-    resp = code.create(sample)
+def test_create(sample):
+    resp = data.create(sample)
     assert resp == sample
-    
-def test_get_exists():
-    resp = code.get_one("Maina")
+
+def test_create_duplicate(sample):
+    resp = data.create(sample)
     assert resp == sample
-    
+    with pytest.raises(Duplicate):
+        resp = data.create(sample)
+
+def test_get_exists(sample):
+    resp = data.cerate(sample)
+    assert resp == sample
+    resp = data.get_one(sample.name)
+    assert resp == sample
+
 def test_get_missing():
-    resp = code.get_one("Mithelle")
-    assert data is None
+    with pytest.raises(Missing):
+        _ = data.get_one("boxturtle")
+
+def test_modify(sample):
+    sample.country = "CA" #Canada
+    resp = data.modify(sample.name,sample)
+    assert resp == sample
+
+def test_modify_missing():
+    bob: Creature = Creature(
+        name = "bob",
+        country = "US",
+        description = "some guy",
+        area = "*",
+        aka = "??"
+    )
+    with pytest.raises(Missing):
+        _ = data.modify(bob.name,bob)

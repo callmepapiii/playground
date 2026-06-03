@@ -1,7 +1,7 @@
 import os
 import pytest
 from model.creature import Creature
-from errors import Missing, Duplicate
+from error import Missing, Duplicate
 
 #Set before data imports for data.init
 os.environ["CRYPTID_SQLITE_DB"] = ":memory:"
@@ -39,3 +39,11 @@ def test_modify_missing():
     thing: Creature = Creature(name="snurfle",country="RU",area="",description="some thing",aka="")
     with pytest.raises(Missing):
         _ = creature.modify(thing.name,thing)
+
+def test_delete(sample):
+    resp = creature.delete(sample.name)
+    assert resp is None
+
+def test_delete_missing(sample):
+    with pytest.raises(Missing):
+        _ = creature.delete(sample.name)
